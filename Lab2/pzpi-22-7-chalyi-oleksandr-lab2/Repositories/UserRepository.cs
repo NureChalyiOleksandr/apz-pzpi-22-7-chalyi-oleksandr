@@ -51,4 +51,21 @@ public class UserRepository : IUserRepository
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
     }
+
+    public async Task<List<User>> SearchAsync(string searchTerm)
+    {
+        if (string.IsNullOrEmpty(searchTerm))
+        {
+            return new List<User>();
+        }
+
+        var query = _context.Users.AsQueryable();
+
+        query = query.Where(u =>
+            u.UserName.Contains(searchTerm) ||
+            u.Email.Contains(searchTerm) ||
+            u.PhoneNumber.Contains(searchTerm));
+
+        return await query.ToListAsync();
+    }
 }

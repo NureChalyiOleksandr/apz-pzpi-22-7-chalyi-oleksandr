@@ -75,7 +75,7 @@ namespace SmartLightSense
             {
                 entity.HasKey(s => s.Id);
 
-                entity.Property(s => s.Location)
+                entity.Property(s => s.SectorId)
                     .HasMaxLength(255)
                     .IsRequired();
 
@@ -150,6 +150,10 @@ namespace SmartLightSense
                     .HasMaxLength(100)
                     .IsRequired();
 
+                entity.Property(a => a.Message)
+                    .HasMaxLength(1000)
+                    .IsRequired(false);
+
                 entity.Property(a => a.AlertDateTime)
                     .IsRequired();
 
@@ -175,13 +179,7 @@ namespace SmartLightSense
                 entity.Property(w => w.Date)
                     .IsRequired();
 
-                entity.Property(w => w.Temperature)
-                    .IsRequired();
-
                 entity.Property(w => w.Visibility)
-                    .IsRequired();
-
-                entity.Property(w => w.Precipitation)
                     .IsRequired();
             });
         }

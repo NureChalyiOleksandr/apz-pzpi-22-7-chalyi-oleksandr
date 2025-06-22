@@ -13,7 +13,6 @@ public class AlertRepository : IAlertRepository
         _context = context;
     }
 
-    // Create
     public async Task<Alert> CreateAsync(Alert alert)
     {
         _context.Alerts.Add(alert);
@@ -21,7 +20,6 @@ public class AlertRepository : IAlertRepository
         return alert;
     }
 
-    // Update
     public async Task<Alert> UpdateAsync(Alert alert)
     {
         _context.Alerts.Update(alert);
@@ -29,7 +27,6 @@ public class AlertRepository : IAlertRepository
         return alert;
     }
 
-    // Delete
     public async Task<bool> DeleteAsync(int alertId)
     {
         var alert = await _context.Alerts.FindAsync(alertId);
@@ -40,15 +37,20 @@ public class AlertRepository : IAlertRepository
         return true;
     }
 
-    // Get by Id
     public async Task<Alert> GetByIdAsync(int alertId)
     {
         return await _context.Alerts.FindAsync(alertId);
     }
 
-    // Get all alerts
     public async Task<List<Alert>> GetAllAsync()
     {
         return await _context.Alerts.ToListAsync();
+    }
+
+    public async Task<List<Alert>> GetByStreetLightIdAsync(int streetLightId)
+    {
+        return await _context.Alerts
+            .Where(s => s.StreetlightId == streetLightId)
+            .ToListAsync();
     }
 }

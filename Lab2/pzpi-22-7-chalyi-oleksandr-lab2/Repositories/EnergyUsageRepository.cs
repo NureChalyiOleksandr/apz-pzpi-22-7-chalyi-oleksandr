@@ -51,4 +51,36 @@ public class EnergyUsageRepository : IEnergyUsageRepository
     {
         return await _context.EnergyUsages.ToListAsync();
     }
+    public async Task<EnergyUsage?> GetByDateAndStreetlightIdAsync(int streetlightId, DateTime date)
+    {
+        return await _context.EnergyUsages
+            .Where(eu => eu.StreetlightId == streetlightId && eu.Date <= date)
+            .OrderByDescending(eu => eu.Date)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<EnergyUsage?> GetLatestByStreetlightIdAsync(int streetlightId)
+    {
+        return await _context.EnergyUsages
+            .Where(eu => eu.StreetlightId == streetlightId)
+            .OrderByDescending(eu => eu.Date)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<List<EnergyUsage>> GetLatestForAllStreetlightsAsync()
+    {
+        return await _context.EnergyUsages
+            .GroupBy(eu => eu.StreetlightId)
+            .Select(group => group.OrderByDescending(eu => eu.Date).FirstOrDefault())
+            .ToListAsync();
+    }
+
+    public async Task<List<EnergyUsage>> GetByDateForAllStreetlightsAsync(DateTime date)
+    {
+        return await _context.EnergyUsages
+            .Where(eu => eu.Date <= date)
+            .GroupBy(eu => eu.StreetlightId)
+            .Select(group => group.OrderByDescending(eu => eu.Date).FirstOrDefault())
+            .ToListAsync();
+    }
 }

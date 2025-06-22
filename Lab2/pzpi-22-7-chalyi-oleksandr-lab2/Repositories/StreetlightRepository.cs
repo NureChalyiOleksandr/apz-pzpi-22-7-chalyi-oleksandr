@@ -13,7 +13,6 @@ public class StreetlightRepository : IStreetlightRepository
         _context = context;
     }
 
-    // Create
     public async Task<Streetlight> CreateAsync(Streetlight streetlight)
     {
         _context.Streetlights.Add(streetlight);
@@ -21,7 +20,6 @@ public class StreetlightRepository : IStreetlightRepository
         return streetlight;
     }
 
-    // Update
     public async Task<Streetlight> UpdateAsync(Streetlight streetlight)
     {
         _context.Streetlights.Update(streetlight);
@@ -29,7 +27,6 @@ public class StreetlightRepository : IStreetlightRepository
         return streetlight;
     }
 
-    // Delete
     public async Task<bool> DeleteAsync(int streetlightId)
     {
         var streetlight = await _context.Streetlights.FindAsync(streetlightId);
@@ -40,7 +37,6 @@ public class StreetlightRepository : IStreetlightRepository
         return true;
     }
 
-    // Get by Id
     public async Task<Streetlight> GetByIdAsync(int streetlightId)
     {
         return await _context.Streetlights
@@ -48,11 +44,28 @@ public class StreetlightRepository : IStreetlightRepository
                          .FirstOrDefaultAsync(sl => sl.Id == streetlightId);
     }
 
-    // Get all streetlights
     public async Task<List<Streetlight>> GetAllAsync()
     {
         return await _context.Streetlights
                         .Include(s => s.Sensors)
                         .ToListAsync();
     }
+
+    public async Task UpdateBrightnessAsync(int streetlightId, int brightnessLevel)
+    {
+        var streetlight = await _context.Streetlights.FindAsync(streetlightId);
+        if (streetlight == null) throw new ArgumentException("Streetlight not found");
+
+        streetlight.BrightnessLevel = brightnessLevel;
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<List<Streetlight>> GetBySectorIdAsync(int sectorId)
+    {
+        return await _context.Streetlights
+                             .Where(s => s.SectorId == sectorId)
+                             .Include(s => s.Sensors)
+                             .ToListAsync();
+    }
+
 }

@@ -5,19 +5,18 @@ using SmartLightSense.Repositories;
 using SmartLightSense.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
+using SmartLightSense.Services.WeatherService;
+using SmartLightSense.Services.EmailService;
+using SmartLightSense.Services.BrightnessUpdateBackgroundService;
+using SmartLightSense.Services.EnergyUsageAlertBackgroundService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-// Добавляем DbContext с подключением к базе данных
 builder.Services.AddDbContext<DBContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Добавляем AutoMapper
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());  // Автоматическая регистрация всех профилей в проекте
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-// Добавляем репозитории
 builder.Services.AddScoped<IAlertRepository, AlertRepository>();
 builder.Services.AddScoped<IEnergyUsageRepository, EnergyUsageRepository>();
 builder.Services.AddScoped<IMaintenanceLogRepository, MaintenanceLogRepository>();
@@ -26,7 +25,14 @@ builder.Services.AddScoped<IStreetlightRepository, StreetlightRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IWeatherDataRepository, WeatherDataRepository>();
 
-// Настройка JWT авторизации
+builder.Services.Configure<EmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration"));
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+builder.Services.AddHttpClient<WeatherService>();
+builder.Services.AddHostedService<WeatherDataBackgroundService>();
+builder.Services.AddSingleton<IHostedService, BrightnessUpdateBackgroundService>();
+builder.Services.AddSingleton<IHostedService, EnergyUsageAlertBackgroundService>();
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -42,7 +48,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Настройка Swagger для поддержки JWT авторизации
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
@@ -86,7 +91,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Добавляем аутентификацию и авторизацию
 app.UseAuthentication();
 app.UseAuthorization();
 
