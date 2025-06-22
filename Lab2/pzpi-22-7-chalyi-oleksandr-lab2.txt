@@ -1,0 +1,686 @@
+﻿МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ 
+ХАРКІВСЬКИЙ НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ РАДІОЕЛЕКТРОНІКИ
+Факультет комп’ютерних наук
+Кафедра Програмної інжеренії
+ЗВІТ
+з лабораторної роботи №2 
+з дисципліни «Архітектура програмного забезпечення»
+на тему: «Серверна частина програмного застосунку»
+
+
+
+
+Виконав:                                                                 Перевірив:
+Ст. гр. ПЗПІ-22-7                                                         Ст. вик. каф. ПІ
+Чалий О. О.                                                         Сокорчук І. П.
+Харків 2025
+1  ІСТОРІЯ ЗМІН
+
+
+№
+	Дата
+	Версія звіту
+	Опис змін та виправлень
+	1
+	14.06.2025
+	0.1
+	Створено розділ «Історія змін»
+	2
+	14.06.2025
+	0.1
+	Створено розділ «Завдання»
+	3
+	14.06.2025
+	0.1
+	Створено розділ «Опис виконаної роботи»
+	4
+	15.06.2025
+	0.1
+	Створено розділ «Висновки»
+	5
+	15.06.2025
+	0.1
+	Створено додаток А
+	6
+	15.06.2025
+	0.1
+	Створено додаток Б
+	7
+	15.06.2025
+	0.1
+	Створено додаток В
+	
+
+2 ЗАВДАННЯ
+Потрібно розробити серверну / back-end частину програмної системи.
+Проаналізуйте завдання (додаток В).
+Виконати контрольні завдання.
+Відкрити створений на попередній лабораторній роботі репозиторій GitHub.
+Створіть у репозиторії директорію Lab2 та текстовий файл з описом інженерних рішень у цій частині проєкту.
+Зафіксуйте кожну внесену зміну командою git commit з відповідним коментарем та фіксуйте цією командою усі наступні зміни у проекті.
+Створіть у директорії Task2 піддиректорію для програмного коду.
+Створіть програмний код, завантажте його у створену піддиректорію, зафіксуйте внесені у репозиторій зміни. Виконайте функціональне тестування створеного програмного коду та створіть відеозапис цього тестування тривалістю 7-10 хвилин з усними поясненнями процесу тестування.
+Завантажте створений відеозапис тестування YouTube канал для вашого облікового запису в домені @nure.ua
+Створіть для завантаженого запису його хронологічний опис.
+Оформіть звіт у форматі pdf та завантажте його на навчальну платформу https://dl.nure.ua/
+У коментарях до завантаженого звіту вкажіть посилання на відеозапис тестування у вашому каналі YouTube.
+
+
+3 ОПИС ВИКОНАНОЇ РОБОТИ
+Серверна частина реалізована з використанням фреймворку ASP.NET Core (.NET) мовою програмування C#.
+Для зберігання даних використовується база даних Microsoft SQL Server.
+Автентифікація користувачів реалізована за допомогою JWT-токенів, а також підтримується вхід через Google та GitHub.
+Серверна частина складається з таких основних модулів:
+1. Авторизація та автентифікація
+
+   * Реєстрація користувачів
+
+   * Вхід за допомогою email/паролю
+
+   * Вхід через Google та GitHub
+
+   * Вихід з системи (завершення сесії)
+
+      2. Управління користувачами
+
+         * Перегляд профілю
+
+         * Редагування даних користувача
+
+         * Скидання пароля
+
+         * Відновлення доступу
+
+            3. Адміністрування
+
+               * Призначення ролі адміністратора
+
+               * Перегляд списку всіх користувачів
+
+               * Блокування облікових записів
+
+                  4. Моніторинг якості повітря
+
+                     * Збір даних з IoT-пристроїв у реальному часі
+
+                     * Персоналізовані дані користувача
+
+                     * Перегляд історичних даних
+
+                        5. Геолокаційний модуль
+
+                           * Збереження місцезнаходження пристроїв або користувачів
+
+                           * Отримання останнього збереженого розташування
+
+На рисунках Б.1–Б.5 у додатку Б наведено такі діаграми:
+                              * Б.1 — Діаграма прецедентів взаємодії адміністратора та користувача з системою
+
+                              * Б.2 — UML-діаграма прецедентів
+
+                              * Б.3 — Діаграма розгортання
+
+                              * Б.4 — Діаграма діяльності
+
+                              * Б.5 — ER-діаграма
+
+Опис бази даних програмної системи описаний в таблицях 1-10.
+
+
+Таблиця 1 – Таблиця бази даних Alerts
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	StreetlightId
+	INT
+	NULL
+	SensorId
+	INT
+	NULL
+	AlertType
+	NVARCHAR(MAX)
+	NOT NULL
+	AlertDateTime
+	DATETIME
+	NOT NULL
+	Resolved
+	BIT
+	NOT NULL
+	
+
+Таблиця 2 – Таблиця бази даних EnergyUsages
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	StreetlightId
+	INT
+	NOT NULL
+	Date
+	DATETIME
+	NOT NULL
+	EnergyConsumed
+	FLOAT
+	NOT NULL
+	
+
+Таблиця 3 – Таблиця бази даних MaintenanceLogs
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	StreetlightId
+	INT
+	NULL
+	AlertId
+	INT
+	NULL
+	TechnicianId
+	INT
+	NOT NULL
+	Date
+	DATETIME
+	NOT NULL
+	IssueReported
+	NVARCHAR(MAX)
+	NOT NULL
+	ActionTaken
+	NVARCHAR(MAX)
+	NOT NULL
+	Status
+	NVARCHAR(MAX)
+	NOT NULL
+	
+
+Таблиця 4 – Таблиця бази даних Sensors
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	SensorType
+	NVARCHAR(MAX)
+	NOT NULL
+	InstallationDate
+	DATETIME
+	NOT NULL
+	Status
+	NVARCHAR(MAX)
+	NOT NULL
+	Data
+	NVARCHAR(MAX)
+	NOT NULL
+	LastUpdate
+	DATETIME
+	NOT NULL
+	StreetlightId
+	INT
+	NOT NULL
+	
+
+Таблиця 5 – Таблиця бази даних Streetlights
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	Location
+	NVARCHAR(MAX)
+	NOT NULL
+	Type
+	NVARCHAR(MAX)
+	NOT NULL
+	InstallationDate
+	DATETIME
+	NOT NULL
+	Status
+	NVARCHAR(MAX)
+	NOT NULL
+	BrightnessLevel
+	INT
+	NOT NULL
+	LastMaintenanceDate
+	DATETIME
+	NOT NULL
+	
+
+Таблиця 6 – Таблиця бази даних Users
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	UserName
+	NVARCHAR(MAX)
+	NOT NULL
+	Password
+	NVARCHAR(MAX)
+	NOT NULL
+	Role
+	NVARCHAR(MAX)
+	NOT NULL
+	Email
+	NVARCHAR(MAX)
+	NULL
+	PhoneNumber
+	NVARCHAR(MAX)
+	NULL
+	LastLogin
+	DATETIME
+	NOT NULL
+	
+
+Таблиця 7 – Таблиця бази даних WeatherDatas
+Назва поля
+	Тип даних
+	Обмеження
+	Id
+	INT
+	PRIMARY KEY
+	Date
+	DATETIME
+	NOT NULL
+	Temperature
+	FLOAT
+	NOT NULL
+	Visibility
+	FLOAT
+	NOT NULL
+	Precipitation
+	FLOAT
+	NOT NULL
+	
+
+Таблиця 8 – Специфікації API
+Категорія
+	Метод
+	Шлях
+	Опис
+	Alert
+	POST
+	/api/Alert
+	Створення нового сповіщення
+	GET
+	/api/Alert
+	Отримання всіх сповіщень
+	GET
+	/api/Alert/{id}
+	Отримання конкретного сповіщення
+	PUT
+	/api/Alert/{id}
+	Редагування сповіщення
+	DELETE
+	/api/Alert/{id}
+	Видалення сповіщення
+	Auth
+	POST
+	/api/Auth/Register
+	Створення нового користувача
+	POST
+	/api/Auth/Login
+	Вхід у систему (отримання токену для авторизації)
+	Energy Usage
+	POST
+	/api/EnergyUsage
+	Створення нового запису про використання електроенергії
+	GET
+	/api/EnergyUsage
+	Отримання всіх записів про використання електроенергії
+	GET
+	/api/EnergyUsage/{id}
+	Отримання конкретного запису про використання електроенергії
+	PUT
+	/api/EnergyUsage/{id}
+	Редагування запису про використання електроенергії
+	DELETE
+	/api/EnergyUsage/{id}
+	Видалення запису про використання електроенергії
+	Maintenance Logs
+	POST
+	/api/MaintenanceLogs
+	Створення нового запису про обслуговування
+	GET
+	/api/MaintenanceLogs
+	Отримання всіх записів про обслуговування
+	GET
+	/api/MaintenanceLogs/{id}
+	Отримання конкретного запису про обслуговування
+	PUT
+	/api/MaintenanceLogs/{id}
+	Редагування запису про обслуговування
+	DELETE
+	/api/MaintenanceLogs/{id}
+	Видалення запису про обслуговування
+	Sensor
+	POST
+	/api/Sensor
+	Створення нового сенсору
+	GET
+	/api/Sensor
+	Отримання всіх сенсорів
+	GET
+	/api/Sensor/{id}
+	Отримання конкретного сенсору
+	PUT
+	/api/Sensor/{id}
+	Редагування сенсору
+	DELETE
+	/api/Sensor/{id}
+	Видалення сенсору
+	Streetlight
+	POST
+	/api/Streetlight
+	Створення нового вуличного ліхтаря
+	GET
+	/api/Streetlight
+	Отримання всіх вуличних ліхтарів
+	GET
+	/api/Streetlight/{id}
+	Отримання конкретного вуличного ліхтаря
+	PUT
+	/api/Streetlight/{id}
+	Редагування вуличного ліхтаря
+	DELETE
+	/api/Streetlight/{id}
+	Видалення вуличного ліхтаря
+	User
+	GET
+	/api/User
+	Отримання всіх користувачів
+	GET
+	/api/User/{id}
+	Отримання конкретного користувача
+	PUT
+	/api/User/{id}
+	Редагування користувача
+	DELETE
+	/api/User/{id}
+	Видалення користувача
+	Weather Data
+	POST
+	/api/WeatherData
+	Створення нового запису про погоду
+	GET
+	/api/WeatherData
+	Отримання всіх записів про погоду
+	GET
+	/api/WeatherData/{id}
+	Отримання конкретного запису про погоду
+	PUT
+	/api/WeatherData/{id}
+	Редагування запису про погоду
+	DELETE
+	/api/WeatherData/{id}
+	Видалення запису про погоду
+	
+
+4 ВИСНОВКИ
+Під час виконання лабораторної роботи було розроблено серверну частину програмної системи.
+
+
+
+
+ДОДАТОК А
+Посилання на відео та хронологічний опис
+
+
+Відеозапис доповіді на YouTube:https://youtu.be/ZBpZG12QmW8 
+Хронологічний опис доповіді:
+00:00 - Тестування API Авторизації та User
+02:40 - Тестування API WeatherData
+04:09 - Тестування API Streetlight
+06:00 - Тестування API Sensor
+08:00 - Тестування API EnergyUsage
+09:52 - Тестування API Alert
+11:43 - Тестування API MaintenanceLog
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+________________
+
+
+
+
+
+
+ДОДАТОК Б
+Графічні моделі
+
+
+  
+
+Рисунок Б.1 — Діаграма прецедентів взаємодії адміністратора та користувача з системою
+
+
+  
+
+Рисунок  Б.2 — UML-діаграма прецедентів
+
+
+
+
+
+  
+
+Рисунок  Б.3 — Діаграма розгортання
+
+
+  
+
+Рисунок  Б.4 — Діаграма діяльності
+
+  
+
+Рисунок Б.5 — ER-діаграма
+
+
+________________
+
+
+ДОДАТОК В
+Програмний код
+В.1 Математична обробка прикладних даних
+GitHub репозиторій: https://github.com/NureChalyiOleksandr/apz-pzpi-22-7-chalyi-oleksandr/blob/main/Lab2/pzpi-22-7-chalyi-oleksandr-lab2/Services/BrightnessUpdateBackgroundService/BrightnessUpdateBackgroundService.cs 
+01  using Microsoft.Extensions.Hosting;
+02  using System.Linq;
+03  using System.Threading;
+04  using System.Threading.Tasks;
+05  using SmartLightSense.Interfaces;
+06  using SmartLightSense.Models;
+07  
+08  namespace SmartLightSense.Services.BrightnessUpdateBackgroundService
+09  {
+10      public class BrightnessUpdateBackgroundService : BackgroundService
+11      {
+12          private readonly IServiceScopeFactory _scopeFactory;
+13  
+14          public BrightnessUpdateBackgroundService(IServiceScopeFactory scopeFactory)
+15          {
+16              _scopeFactory = scopeFactory;
+17          }
+18  
+19          protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+20          {
+21              while (!stoppingToken.IsCancellationRequested)
+22              {
+23                  try
+24                  {
+25                      using (var scope = _scopeFactory.CreateScope())
+26                      {
+27                          var streetlightRepository = scope.ServiceProvider.GetRequiredService<IStreetlightRepository>();
+28                          var sensorRepository = scope.ServiceProvider.GetRequiredService<ISensorRepository>();
+29                          var weatherDataRepository = scope.ServiceProvider.GetRequiredService<IWeatherDataRepository>();
+30  
+31                          var streetlights = await streetlightRepository.GetAllAsync();
+32                          var weatherData = await weatherDataRepository.GetLatestWeatherAsync();
+33  
+34                          if (weatherData == null)
+35                          {
+36                              weatherData = new WeatherData { Visibility = 1.0 };
+37                          }
+38  
+39                          foreach (var streetlight in streetlights)
+40                          {
+41                              var streetlightsInSector = await streetlightRepository.GetBySectorIdAsync(streetlight.SectorId);
+42                              var sensorsInSector = new List<Sensor>();
+43                              foreach (var streetlightInSector in streetlightsInSector)
+44                              {
+45                                  var sensorsForStreetlight = await sensorRepository.GetByStreetLightIdAsync(streetlightInSector.Id);
+46                                  sensorsInSector.AddRange(sensorsForStreetlight);
+47                              }
+48  
+49                              var motionSensor = sensorsInSector.FirstOrDefault(sensor => sensor.SensorType == "Motion" && sensor.Data == 1);
+50                              var motionDetected = motionSensor != null;
+51  
+52                              var lightSensor = sensorsInSector.FirstOrDefault(sensor => sensor.SensorType == "Light" && sensor.StreetlightId == streetlight.Id);
+53                              var lightIntensity = lightSensor != null ? lightSensor.Data : 0;
+54  
+55                              int brightness = CalculateBrightness(lightIntensity, motionDetected, weatherData.Visibility);
+56  
+57                              await streetlightRepository.UpdateBrightnessAsync(streetlight.Id, brightness);
+58  
+59                          }
+60                      }
+61                  }
+62                  catch (Exception ex)
+63                  {
+64                      Console.WriteLine($"Error while updating brightness: {ex.Message}");
+65                  }
+66  
+67                  await Task.Delay(TimeSpan.FromSeconds(1), stoppingToken);
+68              }
+69          }
+70  
+71          private int CalculateBrightness(int lightIntensity, bool motionDetected, double visibility)
+72          {
+73              int normalLightIntensity = 1000;
+74              double visibilityFactor = visibility < 0.05 ? 1.5 : (visibility > 0.5 ? 1 : 1.5 - (visibility - 0.05) * (0.5 - 1) / (0.5 - 0.05));
+75              double lightIntensityFactor = lightIntensity < normalLightIntensity ? 1 + (normalLightIntensity - lightIntensity) / (double)normalLightIntensity : 1;
+76  
+77              if (visibility >= 0.2 && lightIntensity >= normalLightIntensity)
+78                  return 0;
+79  
+80              var brightness = visibilityFactor * lightIntensityFactor * 50;
+81              return motionDetected ? (int)(brightness * 1.5) : (int)(brightness);
+82          }
+83      }
+84  }
+
+
+В.2 Адміністрування бізнес-логіки системи
+GitHub репозиторій: https://github.com/NureChalyiOleksandr/apz-pzpi-22-7-chalyi-oleksandr/blob/main/Lab2/pzpi-22-7-chalyi-oleksandr-lab2/Controllers/AuthController.cs 
+01  using Microsoft.AspNetCore.Mvc;
+02  using SmartLightSense.Dtos;
+03  using SmartLightSense.Interfaces;
+04  using SmartLightSense.Models;
+05  using System.IdentityModel.Tokens.Jwt;
+06  using System.Security.Claims;
+07  using Microsoft.IdentityModel.Tokens;
+08  using System.Text;
+09  
+10  namespace SmartLightSense.Controllers;
+11  
+12  [ApiController]
+13  [Route("api/[controller]")]
+14  public class AuthController : ControllerBase
+15  {
+16      private readonly IUserRepository _userRepository;
+17      private readonly IConfiguration _configuration;
+18  
+19      public AuthController(IUserRepository userRepository, IConfiguration configuration)
+20      {
+21          _userRepository = userRepository;
+22          _configuration = configuration;
+23      }
+24  
+25      [HttpPost("Register")]
+26      public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+27      {
+28          var existingUser = await _userRepository.GetByUserNameAsync(registerDto.UserName);
+29          if (existingUser != null)
+30          {
+31              return BadRequest("User already exists.");
+32          }
+33  
+34          var newUser = new User
+35          {
+36              UserName = registerDto.UserName,
+37              Password = BCrypt.Net.BCrypt.HashPassword(registerDto.Password),
+38              Email = registerDto.Email,
+39              PhoneNumber = registerDto.PhoneNumber,
+40              Role = "User" 
+41          };
+42  
+43          await _userRepository.CreateAsync(newUser);
+44  
+45          return Ok("User registered successfully.");
+46      }
+47  
+48      [HttpPost("Login")]
+49      public async Task<IActionResult> Login([FromBody] LoginDto loginDto)
+50      {
+51          var user = await _userRepository.GetByUserNameAsync(loginDto.UserName);
+52          if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password))
+53          {
+54              return Unauthorized("Invalid username or password.");
+55          }
+56  
+57          var token = GenerateJwtToken(user);
+58  
+59          return Ok(new { Token = token });
+60      }
+61  
+62      private string GenerateJwtToken(User user)
+63      {
+64          var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+65          var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+66  
+67          var claims = new[]
+68          {
+69              new Claim(ClaimTypes.Name, user.UserName),
+70              new Claim(ClaimTypes.Role, user.Role),
+71              new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
+72          };
+73  
+74          var token = new JwtSecurityToken(
+75              _configuration["Jwt:Issuer"],
+76              _configuration["Jwt:Audience"],
+77              claims,
+78              expires: DateTime.Now.AddHours(1),
+79              signingCredentials: creds
+80          );
+81  
+82          return new JwtSecurityTokenHandler().WriteToken(token);
+83      }
+84  }
